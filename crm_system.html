@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σύστημα Διαχείρισης CRM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .form-section input, .form-section textarea {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal-header {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Σύστημα Διαχείρισης CRM</h1>
+    </header>
+    <div class="container">
+        <!-- Πελάτες Section -->
+        <div class="section">
+            <h2>Πελάτες</h2>
+            <button class="button" onclick="openModal('addClientModal')">Προσθήκη Πελάτη</button>
+            <table id="clientsTable">
+                <thead>
+                    <tr>
+                        <th>ΑΦΜ</th>
+                        <th>Όνομα</th>
+                        <th>Περιγραφή</th>
+                        <th>Υπόλοιπο</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Πελάτες θα προστεθούν εδώ -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Αποθήκη Section -->
+        <div class="section">
+            <h2>Αποθήκη</h2>
+            <button class="button" onclick="openModal('addProductModal')">Προσθήκη Προϊόντος</button>
+            <button class="button" onclick="openModal('removeProductModal')">Αφαίρεση Προϊόντος</button>
+            <input type="text" id="barcodeSearch" placeholder="Σάρωση Barcode για Έλεγχο Τιμής" oninput="searchProductByBarcode()">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Barcode</th>
+                        <th>Περιγραφή</th>
+                        <th>Απόθεμα</th>
+                        <th>Τιμή Εισαγωγής</th>
+                        <th>Ποσοστό Κέρδους (%)</th>
+                        <th>Τιμή Πώλησης</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Προϊόντα θα προστεθούν εδώ -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Ραντεβού Section -->
+        <div class="section">
+            <h2>Ημερολόγιο Ραντεβού</h2>
+            <button class="button" onclick="openModal('addAppointmentModal')">Προσθήκη Ραντεβού</button>
+            <table id="appointmentTable">
+                <thead>
+                    <tr>
+                        <th>Ημερομηνία</th>
+                        <th>Ώρα</th>
+                        <th>Πελάτης</th>
+                        <th>Περιγραφή</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ραντεβού θα προστεθούν εδώ -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Προσθήκη Ραντεβού Modal -->
+        <div id="addAppointmentModal" class="modal">
+            <div class="modal-header">
+                <h2>Προσθήκη Ραντεβού</h2>
+            </div>
+            <form id="appointmentForm">
+                <div class="form-section">
+                    <label for="appointmentDate">Ημερομηνία:</label>
+                    <input type="date" id="appointmentDate" required>
+                    <label for="appointmentTime">Ώρα:</label>
+                    <input type="time" id="appointmentTime" required>
+                    <label for="appointmentClient">Πελάτης:</label>
+                    <input type="text" id="appointmentClient" required>
+                    <label for="appointmentDescription">Περιγραφή:</label>
+                    <input type="text" id="appointmentDescription" required>
+                    <button type="submit" class="button">Προσθήκη</button>
+                </div>
+            </form>
+            <button class="button" onclick="closeModal('addAppointmentModal')">Κλείσιμο</button>
+        </div>
+
+        <!-- Προσθήκη Προϊόντος Modal -->
+        <div id="addProductModal" class="modal">
+            <div class="modal-header">
+                <h2>Προσθήκη Προϊόντος</h2>
+            </div>
+            <form id="addProductForm">
+                <div class="form-section">
+                    <label for="productBarcode">Barcode:</label>
+                    <input type="text" id="productBarcode" required>
+                    <label for="productDescription">Περιγραφή:</label>
+                    <input type="text" id="productDescription" required>
+                    <label for="productStock">Απόθεμα:</label>
+                    <input type="number" id="productStock" required>
+                    <label for="productCost">Τιμή Εισαγωγής:</label>
+                    <input type="number" id="productCost" required>
+                    <label for="productProfitMargin">Ποσοστό Κέρδους (%):</label>
+                    <input type="number" id="productProfitMargin" required>
+                    <label for="productSellingPrice">Τιμή Πώλησης:</label>
+                    <input type="number" id="productSellingPrice" readonly>
+                    <button type="submit" class="button">Προσθήκη</button>
+                </div>
+            </form>
+            <button class="button" onclick="closeModal('addProductModal')">Κλείσιμο</button>
+        </div>
+
+        <!-- Αφαίρεση Προϊόντος Modal -->
+        <div id="removeProductModal" class="modal">
+            <div class="modal-header">
+                <h2>Αφαίρεση Προϊόντος</h2>
+            </div>
+            <form id="removeProductForm">
+                <div class="form-section">
+                    <label for="removeBarcode">Barcode Προϊόντος προς Αφαίρεση:</label>
+                    <input type="text" id="removeBarcode" required>
+                    <button type="submit" class="button">Αφαίρεση</button>
+                </div>
+            </form>
+            <button class="button" onclick="closeModal('removeProductModal')">Κλείσιμο</button>
+        </div>
+    </div>
+
+    <script>
+        let inventory = [];
+        let appointments = [];
+
+        // Προσθήκη νέου προϊόντος στην αποθήκη
+        document.getElementById('addProductForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const barcode = document.getElementById('productBarcode').value;
+            const description = document.getElementById('productDescription').value;
+            const stock = document.getElementById('productStock').value;
+            const cost = parseFloat(document.getElementById('productCost').value);
+            const profitMargin = parseFloat(document.getElementById('productProfitMargin').value);
+            
+            // Υπολογισμός Τιμής Πώλησης
+            const sellingPrice = cost * (1 + (profitMargin / 100));
+
+            const newProduct = {
+                barcode: barcode,
+                description: description,
+                stock: stock,
+                cost: cost,
+                profitMargin: profitMargin,
+                sellingPrice: sellingPrice
+            };
+
+            inventory.push(newProduct);
+            updateInventoryTable();
+            closeModal('addProductModal');
+        });
+
+        // Προσθήκη νέου ραντεβού
+        document.getElementById('appointmentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const appointmentClient = document.getElementById('appointmentClient').value;
+            const appointmentDescription = document.getElementById('appointmentDescription').value;
+
+            const newAppointment = {
+                date: appointmentDate,
+                time: appointmentTime,
+                client: appointmentClient,
+                description: appointmentDescription
+            };
+
+            appointments.push(newAppointment);
+            updateAppointmentTable();
+            closeModal('addAppointmentModal');
+        });
+
+        // Ενημέρωση πίνακα αποθήκης
+        function updateInventoryTable() {
+            const inventoryTable = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+            inventoryTable.innerHTML = '';
+
+            inventory.forEach(product => {
+                const row = inventoryTable.insertRow();
+                row.innerHTML = `
+                    <td>${product.barcode}</td>
+                    <td>${product.description}</td>
+                    <td>${product.stock}</td>
+                    <td>${product.cost} €</td>
+                    <td>${product.profitMargin} %</td>
+                    <td>${product.sellingPrice.toFixed(2)} €</td>
+                    <td><button class="button" onclick="viewProductDetails('${product.barcode}')">Προβολή</button></td>
+                `;
+            });
+        }
+
+        // Ενημέρωση πίνακα ραντεβού
+        function updateAppointmentTable() {
+            const appointmentTable = document.getElementById('appointmentTable').getElementsByTagName('tbody')[0];
+            appointmentTable.innerHTML = '';
+
+            appointments.forEach(appointment => {
+                const row = appointmentTable.insertRow();
+                row.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.time}</td>
+                    <td>${appointment.client}</td>
+                    <td>${appointment.description}</td>
+                `;
+            });
+        }
+
+        // Λειτουργίες Modal (Άνοιγμα και Κλείσιμο)
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+    </script>
+</body>
+</html>
